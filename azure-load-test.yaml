@@ -1,0 +1,30 @@
+resources:
+  # pipelines:
+  # - pipeline: <pipeline>
+  #   source: <project>/<pipeline>
+  #   trigger: true
+  repositories:
+  - repository: templates
+    type: git
+    name: <project>/<repository>
+
+trigger:
+  batch: true
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - azure-load-test.*
+
+variables:
+- name: application
+  value: core
+- name: domain
+  value: app.dev.cirrussecure.com
+
+extends:
+  template: azure-load-test.yaml@templates
+  parameters:
+    application: $(application)
+    domain: $(domain)

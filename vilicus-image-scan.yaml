@@ -1,0 +1,40 @@
+resources:
+  # containers:
+  # - container: acr
+  #   type: acr
+  #   subscription: <connection>
+  #   registry: <registry>
+  #   repository: <repository>
+  #   image: <repository>/<image>:<tag>
+  #   trigger: true
+  repositories:
+  - repository: templates
+    type: git
+    name: <project>/<repository>
+
+trigger:
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - vilicus-image-scan.*
+
+variables:
+- name: image
+  value: debian
+
+stages:
+- stage:
+  jobs:
+  - job:
+    pool:
+      vmImage: ubuntu-latest
+    workspace:
+      clean: all
+    steps:
+    - script: |
+        docker pull $(image)
+    - template: vilicus-image-scan.yaml@templates
+      parameters:
+        image: $(image)
